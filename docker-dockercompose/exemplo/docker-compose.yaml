@@ -1,0 +1,33 @@
+version: '3'
+services: 
+ web:
+  build: ./nginx/
+  ports:
+   - 8080:80
+  volumes:
+   - ./nginx:/usr/share/nginx/html # o que mudar no './nginx', será replicado no '/user/share/nginx/html'
+ nodeapp:
+  build: ./nodeapp/
+  volumes:
+   - ./nodeapp:/usr/src/app
+ db:
+  image: postgres:9.4
+  restart: always
+  tty: true
+  volumes:
+   - .pgdata:/var/lib/postgresql/data
+  environment:
+   - POSTGRES_PASSWORD=root
+   - POSTGRES_DB=codebank
+  ports:
+   - "5432:5432"
+ pgadmin:
+  image: dpage/pgadmin4
+  tty: true
+  environment:
+   - PGADMIN_DEFAULT_EMAIL=admin@user.com
+   - PGADMIN_DEFAULT_PASSWORD=123456
+  ports:
+   - "9000:80"
+  depends_on:
+   - db
